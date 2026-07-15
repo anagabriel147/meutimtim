@@ -7,30 +7,13 @@ import { Eye, EyeOff, TriangleAlert } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { supabase } from '@/lib/supabase'
 
-// Mocked credentials for the frontend-only prototype
-const MOCK_CLIENT = {
-  email: 'ana@timtim.com.br',
-  password: '12345',
-  redirect: '/cliente',
-}
-
-const MOCK_SUPPLIER = {
-  email: 'fornecedor@timtim.com.br',
-  password: '12345',
-  redirect: '/fornecedor',
-}
-
-const MOCK_ADVISOR = {
-  email: 'assessor@timtim.com.br',
-  password: '12345',
-  redirect: '/assessor',
-}
-
-const MOCK_ADMIN = {
-  email: 'admin@timtim.com.br',
-  password: '12345',
-  redirect: '/admin',
+const ROLE_REDIRECTS: Record<string, string> = {
+  client: '/cliente',
+  supplier: '/fornecedor',
+  advisor: '/assessor',
+  admin: '/admin',
 }
 
 export function LoginForm() {
@@ -41,37 +24,35 @@ export function LoginForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    setLoading(true)
 
-    const login = email.trim().toLowerCase()
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      })
 
-    if (login === MOCK_CLIENT.email && password === MOCK_CLIENT.password) {
-      setLoading(true)
-      router.push(MOCK_CLIENT.redirect)
-      return
+      if (authError) {
+        setError('E-mail ou senha incorretos. Verifique seus dados e tente novamente.')
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .maybeSingle()
+
+      const role = profile?.role ?? 'client'
+      router.push(ROLE_REDIRECTS[role] ?? '/cliente')
+    } catch {
+      setError('Erro de conexão. Tente novamente.')
+    } finally {
+      setLoading(false)
     }
-
-    if (login === MOCK_SUPPLIER.email && password === MOCK_SUPPLIER.password) {
-      setLoading(true)
-      router.push(MOCK_SUPPLIER.redirect)
-      return
-    }
-
-    if (login === MOCK_ADVISOR.email && password === MOCK_ADVISOR.password) {
-      setLoading(true)
-      router.push(MOCK_ADVISOR.redirect)
-      return
-    }
-
-    if (login === MOCK_ADMIN.email && password === MOCK_ADMIN.password) {
-      setLoading(true)
-      router.push(MOCK_ADMIN.redirect)
-      return
-    }
-
-    setError('E-mail ou senha incorretos. Verifique seus dados e tente novamente.')
   }
 
   return (
@@ -108,7 +89,7 @@ export function LoginForm() {
               htmlFor="login-password"
               className="text-xs font-medium tracking-wider text-muted-foreground"
             >
-              PASSWORD
+              SENHA
             </label>
             <Link
               href="/recuperar-senha"

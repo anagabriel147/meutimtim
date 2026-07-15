@@ -4,9 +4,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─── TimTim Brand Color Palette ───────────────────────────────────────────
+   Ciano Neon  #00CFC8   Destaque / Botões / CTAs
+   Azul Neon   #03FFF6   Secundário
+   Verde Mar   #009C97   Tom médio
+   Grafite     #111111   Fundo principal / Dark mode
+   Cinza Esc.  #2A2A2A   Superfícies secundárias
+   Preto Abs.  #000000   Fundo absoluto
+   ─────────────────────────────────────────────────────────────────────── */
+
 @theme inline {
+  /* Typography */
   --font-sans: var(--font-poppins), 'Poppins Fallback', sans-serif;
-  --font-display: var(--font-poppins), 'Poppins Fallback', sans-serif;
+  --font-display: var(--font-exo2), 'Exo 2 Fallback', sans-serif;
+  --font-serif: var(--font-playfair), 'Playfair Display Fallback', serif;
+
+  /* Semantic tokens */
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -25,6 +38,16 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+
+  /* Brand raw tokens (available as Tailwind utilities) */
+  --color-brand-cyan: #00CFC8;
+  --color-brand-neon: #03FFF6;
+  --color-brand-sea: #009C97;
+  --color-brand-graphite: #111111;
+  --color-brand-dark: #2A2A2A;
+  --color-brand-black: #000000;
+
+  /* Radius scale */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -36,29 +59,43 @@
 
 :root {
   color-scheme: dark;
-  --background: oklch(0.16 0.008 196);
-  --foreground: oklch(0.97 0.003 196);
-  --card: oklch(0.2 0.009 196);
-  --card-foreground: oklch(0.97 0.003 196);
-  --popover: oklch(0.2 0.009 196);
-  --popover-foreground: oklch(0.97 0.003 196);
-  --primary: oklch(0.82 0.13 189);
-  --primary-foreground: oklch(0.19 0.02 196);
-  --secondary: oklch(0.25 0.009 196);
-  --secondary-foreground: oklch(0.97 0.003 196);
-  --muted: oklch(0.25 0.009 196);
-  --muted-foreground: oklch(0.62 0.012 196);
-  --accent: oklch(0.27 0.02 189);
-  --accent-foreground: oklch(0.9 0.05 189);
+
+  --background: #111111;
+  --foreground: #e8f8f8;
+
+  --card: #181818;
+  --card-foreground: #e8f8f8;
+  --popover: #181818;
+  --popover-foreground: #e8f8f8;
+
+  /* Primary = Ciano Neon */
+  --primary: #00CFC8;
+  --primary-foreground: #041616;
+
+  /* Secondary surface */
+  --secondary: #2A2A2A;
+  --secondary-foreground: #c8e8e8;
+
+  --muted: #202020;
+  --muted-foreground: #6a9898;
+
+  /* Accent = Verde Mar tint */
+  --accent: #152e2e;
+  --accent-foreground: #00CFC8;
+
   --destructive: oklch(0.62 0.2 25);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.82 0.13 189);
-  --chart-1: oklch(0.82 0.13 189);
-  --chart-2: oklch(0.7 0.11 189);
-  --chart-3: oklch(0.58 0.09 189);
-  --chart-4: oklch(0.46 0.07 189);
-  --chart-5: oklch(0.34 0.05 189);
+
+  --border: rgba(0, 207, 200, 0.14);
+  --input: rgba(0, 207, 200, 0.10);
+  --ring: #00CFC8;
+
+  /* Chart — cyan ramp */
+  --chart-1: #00CFC8;
+  --chart-2: #009C97;
+  --chart-3: #006d6a;
+  --chart-4: #004a48;
+  --chart-5: #002d2c;
+
   --radius: 0.75rem;
 }
 
@@ -68,5 +105,65 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: #111111;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #181818; }
+  ::-webkit-scrollbar-thumb { background: #00CFC8; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #03FFF6; }
+}
+
+@layer utilities {
+  /* Font families */
+  .font-brand {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .font-serif-brand {
+    font-family: var(--font-serif), serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  /* Neon glow */
+  .glow-cyan {
+    box-shadow: 0 0 18px rgba(0, 207, 200, 0.4), 0 0 36px rgba(0, 207, 200, 0.15);
+  }
+  .glow-cyan-sm {
+    box-shadow: 0 0 8px rgba(0, 207, 200, 0.35);
+  }
+  .glow-text-cyan {
+    text-shadow: 0 0 14px rgba(0, 207, 200, 0.65);
+  }
+  .glow-text-neon {
+    text-shadow: 0 0 18px rgba(3, 255, 246, 0.75);
+  }
+
+  /* Gradient text */
+  .gradient-brand {
+    background: linear-gradient(135deg, #00CFC8 0%, #03FFF6 60%, #009C97 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass surface */
+  .glass {
+    background: rgba(24, 24, 24, 0.80);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 207, 200, 0.14);
+  }
+
+  /* Animated cyan border */
+  .border-neon {
+    border: 1px solid rgba(0, 207, 200, 0.35);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .border-neon:hover {
+    border-color: rgba(0, 207, 200, 0.75);
+    box-shadow: 0 0 10px rgba(0, 207, 200, 0.2);
   }
 }
