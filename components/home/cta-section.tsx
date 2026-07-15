@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleHelp, Zap } from 'lucide-react'
+import { Circle as CircleHelp, Zap } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 
